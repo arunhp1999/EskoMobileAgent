@@ -16,15 +16,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-
-        // Before ending session, check if user was idle
-        EskoMobileAgent.maybeSendIdleEvent(userId, product)
         EskoMobileAgent.endSession(userId, product)
-    }
-
-    override fun onUserLeaveHint() {
-        super.onUserLeaveHint()
-        // If user leaves app (home button), log idle
-        EskoMobileAgent.trackIdle(userId, product, 0.5)
     }
 }
