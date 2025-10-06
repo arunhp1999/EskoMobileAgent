@@ -5,21 +5,26 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.eskomobileagent.tracking.EskoMobileAgent
 
 class MainActivity : AppCompatActivity() {
+    private val userId = "U1"
+    private val product = "MobileApp"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // Example: start session when activity is opened
-        EskoMobileAgent.startSession(this, "U1", "MobileApp")
-
-        // Example: simulate a button click
-        // myButton.setOnClickListener {
-        //     EskoMobileAgent.trackClick("U1", "MobileApp", "SubmitButton")
-        // }
+        EskoMobileAgent.startSession(this, userId, product)
     }
 
     override fun onPause() {
         super.onPause()
-        EskoMobileAgent.endSession("U1", "MobileApp")
+
+        // Before ending session, check if user was idle
+        EskoMobileAgent.maybeSendIdleEvent(userId, product)
+        EskoMobileAgent.endSession(userId, product)
+    }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        // If user leaves app (home button), log idle
+        EskoMobileAgent.trackIdle(userId, product, 0.5)
     }
 }
